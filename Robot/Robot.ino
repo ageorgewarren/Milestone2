@@ -5,9 +5,10 @@ Servo rightservo;                 // name right servo
 
 const int Left = 13;
 const int Right = 8;
-
-int leftvalue = 94;
+int  leftvalue = 94;
 int rightvalue = 94;
+int x; 
+int y;
 
 const byte numChars = 32;
 char receivedChars[numChars];
@@ -52,37 +53,94 @@ void loop() {
 
     if(integer1FromPC > 0)
     {
-      leftvalue = map(integer1FromPC, 1, 255, 95, 180);   // map values from motor format to servo format
+      x = map(integer1FromPC, 0, 255, 95, 180);   // map values from motor format to servo format
     }
 
     if(integer1FromPC < 0)
     {
-      leftvalue = map(integer1FromPC, -255, -1, 0, 93);   // map values from motor format to servo format
+      x = map(integer1FromPC, -1, -255, 93, 0);   // map values from motor format to servo format
     }
 
-    if(integer2FromPC == 0)
+    if(integer1FromPC == 0)
     {
-      leftvalue = 94;                                     // set value of motor equal to 0 RPM
+      x = 94;                                     // set value of motor equal to 0 RPM
     }
 
     if(integer2FromPC > 0)
     {
-      rightvalue = map(integer2FromPC, 1, 255, 95, 180);   // map values from motor format to servo format
+      y = map(integer2FromPC, 0, 255, 95, 180);   // map values from motor format to servo format
     }
 
     if(integer2FromPC < 0)
     {
-      rightvalue = map(integer2FromPC, -255, -1, 0, 93);   // map values from motor format to servo format
+      y = map(integer2FromPC, -1, -255, 93, 0);   // map values from motor format to servo format
     }
 
      if(integer2FromPC == 0)
     {
-      rightvalue = 94;                                     // set value of motor equal to 0 RPM
+      y = 94;                                     // set value of motor equal to 0 RPM
     }
     
 
     if(robotnum == integer0FromPC)                // check if this robot should be receiving driving intstructions
     {
+      if(y>=95 && x >= 95)                        // quadrant 1
+      {
+        leftvalue = y;
+        rightvalue = 94 - (x-94);
+      }
+
+      if(y >=95 && x == 94)                       // all the way up
+      {
+        leftvalue = y;
+        rightvalue = map(y, 95, 176, 93, 0);
+      }
+
+      if (y >= 95 && x<=93)                       // quadrant 2
+      {
+        leftvalue = 94 + (x-94);
+        rightvalue = y;
+      }
+
+      if(y == 94 && x <= 93)                       // all the way left
+      {
+        leftvalue = x;
+        rightvalue = x;
+      }
+
+      if(y <= 93 && x<=93)                        // quadrant 3
+      {
+        leftvalue =  94 - x;
+        //rightvalue = map(y, 93, 0, 95, 180);
+        rightvalue = 94+(94-y);
+      }
+
+      if( y<=93 && x==94)                         // all the way down
+      {
+        leftvalue = y;
+        rightvalue = 94+(94-y);
+      }
+
+      if( y<= 93 && x>= 95)                       // quadrant 4
+      {
+        leftvalue = y;
+        rightvalue = 180 + (94-x);
+      }
+
+      if( y ==94 && x >= 95)                      // all the way right
+      {
+        leftvalue= x;
+        rightvalue = x;
+      }
+
+      if( y==94 && x ==94)
+      {
+        leftvalue = 94;
+        rightvalue = 94;
+      }
+
+      
+    
       leftservo.write(leftvalue);            // write value of 1st integer to left motor 
       delay(10);
       rightservo.write(rightvalue);           // write value of 2nd integer to right motor
@@ -155,11 +213,17 @@ void parseData() {      // split the data into its parts
 
 void showParsedData() {
     Serial.print("<");
-    Serial.print(integer0FromPC);
-    Serial.print(",");
     Serial.print(integer1FromPC);
     Serial.print(",");
     Serial.print(integer2FromPC);
+    Serial.print(",");
+    Serial.print(x);
+    Serial.print(",");
+    Serial.print(y);
+    Serial.print(",");
+    Serial.print(leftvalue);
+    Serial.print(",");
+    Serial.print(rightvalue);
     Serial.println(">");
 }
 
