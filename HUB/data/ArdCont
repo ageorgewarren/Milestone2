@@ -1,8 +1,8 @@
 ArduinoController
-LSTICKY	Left Stick Y	3	SLIDER	Y Axis	0	1.0	0.01
-LSTICKX	Left Stick X	3	SLIDER	X Axis	0	1.0	0.01
-RSTICKY	Right Stick Y	3	SLIDER	Y Rotation	0	1.0	0.01
-RSTICKX	Right Stick X	3	SLIDER	X Rotation	0	1.0	0.01
+LSTICKY	Left Stick Y	3	SLIDER	Y Axis	0	1.0	0.1
+LSTICKX	Left Stick X	3	SLIDER	X Axis	0	1.0	0.1
+RSTICKY	Right Stick Y	3	SLIDER	Y Rotation	0	1.0	0.1
+RSTICKX	Right Stick X	3	SLIDER	X Rotation	0	1.0	0.1
 TRIGGERS	Triggers	3	SLIDER	Z Axis	0	1.0	0.0
 A	A	1	BUTTON	Button 0	0	0.0	0.0
 B	B	1	BUTTON	Button 1	0	0.0	0.0

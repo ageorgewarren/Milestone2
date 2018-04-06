@@ -44,13 +44,13 @@ void loop(){
           X=b;
         }
         if(c>0){
-          X=-c;
+          X=-1*(256-c);
         }
         if(d>0){
           Y=d;
         }
         if(e>0){
-          Y=-e;
+          Y=-1*(256-e);
         }
         if(b==0 && c==0){
           X=0;
@@ -58,7 +58,8 @@ void loop(){
         if(d==0 && e==0){
           Y=0;
         }
-
+        
+        
         if(a==1){
           digitalWrite(Redled,HIGH);
           digitalWrite(Greenled,LOW);

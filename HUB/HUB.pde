@@ -5,7 +5,7 @@ import org.gamecontrolplus.gui.*;
 
 
 ControlIO control;
-int x,y,z,a,b,c,d,X,Y,NX,NY,But;
+int x,y,z,a,b,c,d,X,Y,NX,NY,But,LSTICK;
 ControlDevice device;
 
 
@@ -37,6 +37,7 @@ a=int(device.getButton("A").getValue());
 b=int(device.getButton("B").getValue());
 c=int(device.getButton("X").getValue());
 d=int(device.getButton("Y").getValue());
+LSTICK=int(device.getButton("LSTICK").getValue());
 if(y>0){
     Y=y;
     NY=0;}
@@ -49,6 +50,12 @@ if(x>0){
 if(x<0){
     NX=x;
     X=0;}
+if(LSTICK==8){
+  Y=0;
+  X=0;
+  NY=0;
+  NX=0;
+}
 
 
 if(a==8){But=2;}
