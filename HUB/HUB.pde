@@ -75,7 +75,7 @@ if(d==8){But=0;}
   print(Y);
   print(",");
   println(NY);
-  delay(50);
+  delay(25);
   sendMessage(A_TAG, But,X,NX,Y,NY);
   }
 }
