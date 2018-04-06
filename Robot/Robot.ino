@@ -1,16 +1,15 @@
-#include <Servo.h>
 
-Servo leftservo;                  // name left servo
-Servo rightservo;                 // name right servo
 //============ Change these for each robot
 const int robotnum = 1;     // Robot Number (1, 2, 3)
-const int LeftServeNum=8;   // Left Servo Pin Number
-const int RightServeNum=9;  // Left Servo Pin Number
+const int LF=13;            // Left Motor Forward
+const int LR=12;            // Left Motor Reverse
+const int RF=11;            // Right Motor Reverse
+const int RR=10;            // Right  Motor Reverse
 
 //============
 
-int leftvalue = 94;
-int rightvalue = 94;
+int leftvalue = 0;
+int rightvalue = 0;
 int x; 
 int y;
 
@@ -28,13 +27,12 @@ void setup() {
 Serial.begin(9600);
 Serial1.begin(9600);
 
-leftservo.attach(LeftServeNum);                // declare pin left servo is connected to
-leftservo.write(94);                // write left servo to start at midpoint
-rightservo.attach(RightServeNum);               // declare pin right servo is connected to
-rightservo.write(94);               // write right servo to start at midpoint
+  pinMode(LF,OUTPUT);
+  pinMode(LR,OUTPUT);
+  pinMode(RF,OUTPUT);
+  pinMode(RR,OUTPUT);
 
-pinMode(Left,OUTPUT);
-pinMode(Right,OUTPUT);
+
 }
 
 
@@ -49,12 +47,12 @@ void loop() {
 
     if(integer1FromPC > 0)                        // Send received values to servo
     {
-      servoMapping();
+      motorMapping();
     }
 
     if(integer0FromPC != robotnum)                // check if this robot should not be receiving the command
     {             
-      servoOff();
+      motorOff();
     }
     
 }
@@ -114,28 +112,28 @@ void parseData() {      // split the data into its parts
 //============
 
 void showParsedData() {
-    Serial.print("<");
-    Serial.print(integer1FromPC);
-    Serial.print(",");
-    Serial.print(integer2FromPC);
-    Serial.print(",");
-    Serial.print(x);
-    Serial.print(",");
-    Serial.print(y);
-    Serial.print(",");
-    Serial.print(leftvalue);
-    Serial.print(",");
-    Serial.print(rightvalue);
-    Serial.println(">");
+//    Serial.print("<");
+//    Serial.print(integer1FromPC);
+//    Serial.print(",");
+//    Serial.print(integer2FromPC);
+//    Serial.print(",");
+//    Serial.print(x);
+//    Serial.print(",");
+//    Serial.print(y);
+//    Serial.print(",");
+//    Serial.print(leftvalue);
+//    Serial.print(",");
+//    Serial.print(rightvalue);
+//    Serial.println(">");
 }
 
 //============
 
-void servoMapping(){
-        if(y>=95 && x >= 95)                        // quadrant 1
+void motorMapping(){
+        if(y>= 0 && x >= 0)                      // quadrant 1
       {
         leftvalue = y;
-        rightvalue = 94 - (x-94);
+        rightvalue = 255 - x;
       }
 
       if(y >=95 && x == 94)                       // all the way up
@@ -186,18 +184,40 @@ void servoMapping(){
         leftvalue = 94;
         rightvalue = 94;
       }
-        
-      leftservo.write(leftvalue);            // write value of 1st integer to left motor 
-      rightservo.write(rightvalue);           // write value of 2nd integer to right motor
+
+      if(leftvalue>0){
+      analogWrite(LF,leftvalue);            // write value of 1st integer to left motor 
+      analogWrite(LR,0);                    // write value of 2nd integer to right motor
       delay(10);
+      }
+      if(rightvalue>0){
+      analogWrite(RF,rightvalue);           // write value of 2nd integer to right motor
+      analogWrite(RR,0);                    // write value of 2nd integer to right motor
+      delay(10);
+      }
+      if(leftvalue<0){
+      analogWrite(LF,0);                    // write value of 1st integer to left motor 
+      analogWrite(LR,leftvalue);            // write value of 2nd integer to right motor
+      delay(10);
+      }
+      if(rightvalue<0){
+      analogWrite(RF,0);                    // write value of 2nd integer to right motor
+      analogWrite(RR,rightvalue);           // write value of 2nd integer to right motor
+      delay(10);
+      }
+
+      if(leftvalue==0 && rightvalue==0){
+        motorOff();
+      }
   }
 
   //============
 
-  void servoOff(){
-
-      leftservo.write(94);                        // turn off left motor
-      rightservo.write(94);                       // turn off right motor
+  void motorOff(){
+      analogWrite(LF,0);                       // turn off left motor
+      analogWrite(LR,0);                       // turn off right motor
+      analogWrite(RF,0);                       // turn off left motor
+      analogWrite(RR,0);                       // turn off right motor
       delay(10);
   }
 
