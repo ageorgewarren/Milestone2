@@ -5,6 +5,14 @@ const int LF=12;            // Left Motor Forward
 const int LR=13;            // Left Motor Reverse
 const int RF=10;            // Right Motor Reverse
 const int RR=11;            // Right  Motor Reverse
+const int QTIsense1=5;      // Front QTI sensor
+const int QTIsense2=4;      // Back QTI sensor
+const int Red=7;            // Red Led
+const int Yellow=2;          // Green Led
+const int QTI1Match = 850;             // Value greater than floor but less than black tape for QTI sensor 1 
+const int QTI2Match = 2000;            // Value greater than floor but less than black tape for QTI sensor 2
+int QTI1;
+int QTI2;
 
 //============
 
@@ -30,12 +38,38 @@ Serial1.begin(9600);
   pinMode(LR,OUTPUT);
   pinMode(RF,OUTPUT);
   pinMode(RR,OUTPUT);
+  pinMode(Yellow, OUTPUT);
+  pinMode(Red, OUTPUT);
+  
 
 
 }
 
 
 void loop() {
+    QTI1 = QTIVal(QTIsense1); 
+    QTI2 = QTIVal(QTIsense2);
+    debug();
+
+    if (QTI1<QTI1Match && QTI2<QTI2Match)
+      {
+        digitalWrite(Yellow,LOW);
+        digitalWrite(Red,LOW);
+      }
+    if (QTI1>=QTI1Match && QTI2<QTI2Match)
+      {
+        digitalWrite(Yellow,HIGH);
+        digitalWrite(Red,LOW);
+      }
+    if (QTI2>QTI2Match)
+      {
+        digitalWrite(Yellow,LOW);
+        digitalWrite(Red,HIGH);
+        motorOff();
+        boolean stop=true;
+        while(stop==true){delay(100);}
+      }
+      
     recvWithStartEndMarkers();
     if (newData == true) {
         strcpy(tempChars, receivedChars);
@@ -122,6 +156,10 @@ void debug() {
     Serial.print(leftvalue);
     Serial.print(",");
     Serial.print(rightvalue);
+    Serial.print(",");
+    Serial.print(QTI1);
+    Serial.print(",");
+    Serial.print(QTI2);
     Serial.println(">");
 }
 
@@ -208,9 +246,9 @@ void motorMapping(){
       }
   }
 
-  //============
+//============
 
-  void motorOff(){
+void motorOff(){
       analogWrite(LF,0);                       // turn off left motor
       analogWrite(LR,0);                       // turn off right motor
       analogWrite(RF,0);                       // turn off left motor
@@ -218,4 +256,18 @@ void motorMapping(){
       delay(10);
   }
 
+//============
+
+long QTIVal(int sensorIn){
+   long duration = 0;
+   pinMode(sensorIn, OUTPUT);     
+   digitalWrite(sensorIn, HIGH);  
+   delay(1);                      
+   pinMode(sensorIn, INPUT);      
+   digitalWrite(sensorIn, LOW);   
+   while(digitalRead(sensorIn)){  
+      duration++;
+   }
+   return duration;
+}
 

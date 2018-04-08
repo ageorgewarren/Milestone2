@@ -1,5 +1,8 @@
 
-int ls1; 
+int QTI1; 
+int QTI2;
+const int QTIsense1=5;  // Front QTI sensor
+const int QTIsense2=4;  // Back QTI sensor
 
 void setup() {
  Serial.begin(9600);
@@ -8,13 +11,17 @@ void setup() {
 
 void loop() {
 
-  ls1 = RCTime(6); // replace this with the pin you attatched the WHITE wire of the LEFT qti sensor too
- Serial.println(ls1);
+  QTI1 = QTIVal(QTIsense1); 
+  QTI2 = QTIVal(QTIsense2); 
+ Serial.print(QTI1);
+ Serial.print(',');
+ Serial.println(QTI2);
+ 
 
  
 }
 
-long RCTime(int sensorIn){
+long QTIVal(int sensorIn){
    long duration = 0;
    pinMode(sensorIn, OUTPUT);     
    digitalWrite(sensorIn, HIGH);  
